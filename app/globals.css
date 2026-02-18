@@ -1,0 +1,515 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── CSS Custom Properties ───────────────────────────────────── */
+:root {
+  --war-bg: #0a0e17;
+  --war-bg-secondary: #0d1320;
+  --war-panel: #111827;
+  --war-panel-glass: rgba(17, 24, 39, 0.7);
+  --war-border: #1e293b;
+  --war-border-glow: rgba(59, 130, 246, 0.2);
+  --war-accent: #3b82f6;
+  --war-accent-glow: #60a5fa;
+  --war-danger: #ef4444;
+  --war-warning: #f59e0b;
+  --war-success: #22c55e;
+  --war-muted: #64748b;
+  --war-text: #e2e8f0;
+  --war-text-dim: #94a3b8;
+  --war-gradient-start: #3b82f6;
+  --war-gradient-end: #8b5cf6;
+}
+
+/* ─── Base Styles ─────────────────────────────────────────────── */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--war-bg);
+  color: var(--war-text);
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─── Glassmorphism Panel ─────────────────────────────────────── */
+.glass-panel {
+  background: var(--war-panel-glass);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--war-border);
+  border-radius: 16px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.glass-panel:hover {
+  border-color: var(--war-border-glow);
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.08);
+}
+
+/* ─── Grid Background Pattern ─────────────────────────────────── */
+.war-room-bg {
+  background-image:
+    radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.04) 0%, transparent 50%),
+    radial-gradient(circle at 80% 50%, rgba(139, 92, 246, 0.04) 0%, transparent 50%),
+    linear-gradient(rgba(30, 41, 59, 0.3) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(30, 41, 59, 0.3) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
+}
+
+/* ─── Scrollbar ───────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--war-bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--war-border);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--war-muted);
+}
+
+/* ─── Glowing Button ─────────────────────────────────────────── */
+.btn-glow {
+  background: linear-gradient(135deg, var(--war-gradient-start), var(--war-gradient-end));
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+}
+
+.btn-glow:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.45);
+}
+
+.btn-glow:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn-glow:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ─── Mic Recording Animation ─────────────────────────────────── */
+@keyframes mic-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 0 20px rgba(239, 68, 68, 0);
+  }
+}
+
+.mic-recording {
+  animation: mic-pulse 1.5s ease-in-out infinite;
+  background: linear-gradient(135deg, #ef4444, #dc2626) !important;
+}
+
+/* ─── Agent Status Indicators ─────────────────────────────────── */
+@keyframes status-spin {
+  to { transform: rotate(360deg); }
+}
+
+.status-running {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--war-accent);
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: status-spin 0.8s linear infinite;
+}
+
+.status-done {
+  color: var(--war-success);
+}
+
+.status-error {
+  color: var(--war-danger);
+}
+
+/* ─── Risk Gauge ──────────────────────────────────────────────── */
+@keyframes gauge-fill {
+  from { stroke-dashoffset: 251; }
+}
+
+.gauge-ring {
+  transition: stroke-dashoffset 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ─── Severity Badge ──────────────────────────────────────────── */
+.severity-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.severity-low {
+  background: rgba(34, 197, 94, 0.15);
+  color: #4ade80;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.severity-medium {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.severity-high {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.severity-critical {
+  background: rgba(239, 68, 68, 0.25);
+  color: #fca5a5;
+  border: 1px solid rgba(239, 68, 68, 0.5);
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 8px rgba(239, 68, 68, 0.3); }
+  50% { box-shadow: 0 0 20px rgba(239, 68, 68, 0.6); }
+}
+
+/* ─── Section Headers ─────────────────────────────────────────── */
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.section-header h2 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--war-text), var(--war-accent-glow));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.section-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: rgba(59, 130, 246, 0.1);
+  color: var(--war-accent);
+  font-size: 1rem;
+}
+
+/* ─── Action Plan Timeline ────────────────────────────────────── */
+.timeline-item {
+  position: relative;
+  padding-left: 28px;
+  padding-bottom: 16px;
+}
+
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: 8px;
+  top: 6px;
+  bottom: 0;
+  width: 2px;
+  background: var(--war-border);
+}
+
+.timeline-item:last-child::before {
+  display: none;
+}
+
+.timeline-item::after {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 6px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--war-accent);
+  border: 2px solid var(--war-bg);
+}
+
+/* ─── Scenario Buttons ────────────────────────────────────────── */
+.scenario-btn {
+  background: rgba(17, 24, 39, 0.6);
+  border: 1px solid var(--war-border);
+  border-radius: 12px;
+  padding: 14px 18px;
+  color: var(--war-text);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: left;
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+.scenario-btn:hover {
+  border-color: var(--war-accent);
+  background: rgba(59, 130, 246, 0.06);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.15);
+}
+
+.scenario-btn:active {
+  transform: translateY(0);
+}
+
+/* ─── Fade In Animation ───────────────────────────────────────── */
+.fade-in {
+  animation: fadeIn 0.4s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Tab System ──────────────────────────────────────────────── */
+.tab-btn {
+  padding: 8px 16px;
+  border: none;
+  background: transparent;
+  color: var(--war-text-dim);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.tab-btn:hover {
+  color: var(--war-text);
+}
+
+.tab-btn.active {
+  color: var(--war-accent);
+  border-bottom-color: var(--war-accent);
+}
+
+/* ─── Export Button ───────────────────────────────────────────── */
+.btn-outline {
+  background: transparent;
+  border: 1px solid var(--war-border);
+  color: var(--war-text-dim);
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-outline:hover {
+  border-color: var(--war-accent);
+  color: var(--war-accent);
+  background: rgba(59, 130, 246, 0.06);
+}
+
+/* ─── Loading Skeleton ────────────────────────────────────────── */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(30, 41, 59, 0.5) 25%,
+    rgba(51, 65, 85, 0.5) 50%,
+    rgba(30, 41, 59, 0.5) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 8px;
+}
+
+/* ─── Board Brief (Print Layout) ──────────────────────────────── */
+.board-brief {
+  max-width: 900px;
+  margin: 0 auto;
+  background: white;
+  color: #1a1a2e;
+  font-family: "Inter", system-ui, sans-serif;
+  line-height: 1.6;
+}
+
+.brief-header {
+  padding: 32px 32px 24px;
+  border-bottom: 3px solid #1a1a2e;
+}
+
+.brief-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: #e5e7eb;
+  margin: 0 32px;
+}
+
+.metric-box {
+  background: white;
+  padding: 16px;
+  text-align: center;
+}
+
+.metric-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #6b7280;
+  margin-bottom: 4px;
+}
+
+.metric-value {
+  font-size: 24px;
+  font-weight: 800;
+  font-family: "Inter", monospace;
+}
+
+.brief-section {
+  padding: 24px 32px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.brief-section h2 {
+  font-size: 16px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 12px;
+  color: #1a1a2e;
+}
+
+.brief-section h3 {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #374151;
+}
+
+.brief-section p {
+  font-size: 14px;
+  color: #374151;
+}
+
+.brief-section ul, .brief-section ol {
+  padding-left: 20px;
+  font-size: 13px;
+  color: #374151;
+}
+
+.brief-section li {
+  margin-bottom: 4px;
+}
+
+.brief-section blockquote {
+  border-left: 3px solid #3b82f6;
+  padding: 12px 16px;
+  background: #f8fafc;
+  font-style: italic;
+  font-size: 14px;
+  color: #374151;
+  margin: 8px 0;
+}
+
+.brief-columns {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.brief-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 12px 0;
+  font-size: 13px;
+}
+
+.brief-table th {
+  background: #f3f4f6;
+  padding: 8px 12px;
+  text-align: left;
+  font-weight: 600;
+  border: 1px solid #e5e7eb;
+}
+
+.brief-table td {
+  padding: 8px 12px;
+  border: 1px solid #e5e7eb;
+}
+
+.disclaimer {
+  font-size: 12px;
+  color: #92400e;
+  background: #fffbeb;
+  padding: 8px 12px;
+  border-radius: 6px;
+  margin-top: 8px;
+}
+
+.brief-footer {
+  padding: 24px 32px;
+  text-align: center;
+  font-size: 11px;
+  color: #9ca3af;
+}
+
+/* ─── Print Styles ────────────────────────────────────────────── */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  body {
+    background: white !important;
+    color: black !important;
+  }
+
+  .board-brief {
+    max-width: 100%;
+    margin: 0;
+  }
+
+  .brief-section {
+    break-inside: avoid;
+  }
+
+  .brief-metrics {
+    margin: 0;
+  }
+}
+
