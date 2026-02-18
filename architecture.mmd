@@ -1,0 +1,113 @@
+graph TB
+    subgraph Input["🎙️ Input Layer"]
+        VOICE["Voice Input<br/>Web Speech API"]
+        SCENARIO["Demo Scenarios<br/>Pre-built Crisis Events"]
+        TRANSCRIPT["Crisis Transcript"]
+    end
+
+    subgraph Orchestrator["🧠 Orchestrator Pipeline"]
+        direction TB
+        ROUTER["1. Crisis Router<br/>Classify Type + Severity"]
+        
+        subgraph Agents["⚡ 5 Agents — Parallel Execution (Promise.all)"]
+            direction LR
+            FORENSICS["🔬 Forensics Lead<br/>Root Cause + Containment"]
+            IMPACT["💥 Impact Estimator<br/>Blast Radius + Financial"]
+            LEGAL["⚖️ Legal Advisor<br/>Compliance + Notifications"]
+            PR["📣 PR Strategy<br/>Comms Plan + Holding Stmt"]
+            EXEC["🎖️ Executive Brief<br/>Decisions + Top Risks"]
+        end
+
+        CROSSCHECK["2. Cross-Validator<br/>Conflict Detection + Confidence Adj."]
+        AGGREGATOR["3. Report Aggregator<br/>Merge into Crisis Report"]
+    end
+
+    subgraph Scoring["📊 Deterministic Scoring"]
+        RISK["Risk Score Engine<br/>0-100 (severity + impact + forensics)"]
+        CONFIDENCE["Confidence Engine<br/>0-1 (base - missing_info penalty)"]
+        HEATMAP["Heatmap Generator<br/>5×3 Grid (category × time horizon)"]
+    end
+
+    subgraph AI["🤖 AI Engine"]
+        YOU["YOU.com Express Agent API<br/>LLM + Web Grounding"]
+        ZOD["Zod Schema Validation<br/>Strict JSON Output"]
+    end
+
+    subgraph UI["🖥️ War Room Interface"]
+        direction TB
+        BANNER["Escalation Badge (SEV-0 to SEV-3)<br/>+ NIST Lifecycle Timeline"]
+        SIDEBAR["Agent War Room Sidebar<br/>Real-time Status Panel"]
+        REPORT["Crisis Report<br/>7 Tabs: Summary / Action / Forensics / Impact / Legal / Comms / Exec"]
+        DASHBOARD["Bottom Dashboard — 4 Cards"]
+        CONF_PANEL["🎯 Confidence Panel<br/>Factors + If We're Wrong"]
+        HEAT_PANEL["🗺️ Risk Heatmap<br/>Category × Time Grid"]
+        SLACK_PANEL["💬 Slack War Room<br/>One-click Copy Message"]
+        CROSS_PANEL["🔀 Cross-Validation<br/>Conflicts + Missing Evidence"]
+        BRIEF["📄 Board Brief<br/>Print-optimized PDF at /brief"]
+    end
+
+    %% Input flow
+    VOICE --> TRANSCRIPT
+    SCENARIO --> TRANSCRIPT
+    TRANSCRIPT --> ROUTER
+
+    %% Router to Agents
+    ROUTER -->|"crisis_type + severity + key_facts"| Agents
+
+    %% Agents to Cross-Check
+    FORENSICS --> CROSSCHECK
+    IMPACT --> CROSSCHECK
+    LEGAL --> CROSSCHECK
+    PR --> CROSSCHECK
+    EXEC --> CROSSCHECK
+
+    %% Cross-Check to Aggregator
+    CROSSCHECK -->|"conflicts + confidence_adjustment"| AGGREGATOR
+
+    %% All agent outputs to Aggregator
+    FORENSICS --> AGGREGATOR
+    IMPACT --> AGGREGATOR
+    LEGAL --> AGGREGATOR
+    PR --> AGGREGATOR
+    EXEC --> AGGREGATOR
+
+    %% AI Engine connections
+    ROUTER ---|"callYouJSON()"| YOU
+    Agents ---|"5× parallel callYouJSON()"| YOU
+    CROSSCHECK ---|"callYouJSON()"| YOU
+    AGGREGATOR ---|"callYouJSON()"| YOU
+    YOU --> ZOD
+
+    %% Scoring
+    AGGREGATOR --> RISK
+    AGGREGATOR --> CONFIDENCE
+    CROSSCHECK -.->|"confidence_adjustment"| CONFIDENCE
+    RISK --> HEATMAP
+
+    %% Scoring to UI
+    RISK --> BANNER
+    RISK --> HEAT_PANEL
+    CONFIDENCE --> CONF_PANEL
+    HEATMAP --> HEAT_PANEL
+    AGGREGATOR --> REPORT
+    CROSSCHECK --> CROSS_PANEL
+    REPORT --> BRIEF
+
+    %% UI Layout
+    DASHBOARD --> CONF_PANEL
+    DASHBOARD --> HEAT_PANEL
+    DASHBOARD --> SLACK_PANEL
+    DASHBOARD --> CROSS_PANEL
+
+    %% Styling
+    style Input fill:#1a1a2e,stroke:#16213e,color:#e2e8f0
+    style Orchestrator fill:#0f3460,stroke:#16213e,color:#e2e8f0
+    style Agents fill:#1a1a4e,stroke:#533483,color:#e2e8f0
+    style Scoring fill:#533483,stroke:#16213e,color:#e2e8f0
+    style AI fill:#e94560,stroke:#e94560,color:#fff
+    style UI fill:#0a3d62,stroke:#16213e,color:#e2e8f0
+    style ROUTER fill:#e94560,stroke:#e94560,color:#fff
+    style CROSSCHECK fill:#e94560,stroke:#e94560,color:#fff
+    style AGGREGATOR fill:#e94560,stroke:#e94560,color:#fff
+    style YOU fill:#533483,stroke:#533483,color:#fff
+    style ZOD fill:#533483,stroke:#533483,color:#fff
