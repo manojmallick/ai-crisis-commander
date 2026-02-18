@@ -4,7 +4,7 @@
 
 > AI-driven crisis management that **replaces your first chaotic hour** with structured, cross-validated intelligence. 8 specialized agents run in parallel, disagree with each other, and produce executive-ready output in seconds — not hours.
 
-[![Next.js](https://img.shields.io/badge/Next.js-14-black?logo=next.js)](https://nextjs.org) [![YOU.com](https://img.shields.io/badge/YOU.com-Smart%20API-blueviolet)](https://you.com) [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript)](https://typescriptlang.org) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+[![Live Demo](https://img.shields.io/badge/demo-live-brightgreen)](https://ai-crisis-commander.vercel.app/) [![Next.js](https://img.shields.io/badge/Next.js-14-black?logo=next.js)](https://nextjs.org) [![YOU.com](https://img.shields.io/badge/YOU.com-Smart%20API-blueviolet)](https://you.com) [![Deepgram](https://img.shields.io/badge/Deepgram-STT-13EF93?logo=deepgram)](https://deepgram.com) [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript)](https://typescriptlang.org) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
 **Key Capabilities:** Multi-Agent Orchestration · Parallel Execution · Cross-Validation · NIST SP 800-61 Lifecycle · Deterministic Risk Scoring · SEV Classification · Zod Schema Validation · Voice Input
 
