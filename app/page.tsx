@@ -46,10 +46,64 @@ export default function Home() {
 
     /* ── helpers ── */
 
+    /* ── helpers ── */
+
+    // UPDATED: Pre-defined logs for each agent phase
+    const getAgentLogs = (name: string, phase: "start" | "end") => {
+        const logs: Record<string, string[]> = {
+            ROUTER: [
+                "Analyzing input intent...",
+                "Detected crisis pattern: SYSTEM_OUTAGE",
+                "Routing to specialized agents...",
+            ],
+            FORENSICS: [
+                "Scanning system logs...",
+                "Correlating error spikes with deployment events",
+                "Identifying root cause candidate: DB_LOCK",
+                "Verifying recent commit history...",
+            ],
+            IMPACT: [
+                "Querying active user sessions...",
+                "Estimating financial exposure...",
+                "Mapping affected regions (Global)...",
+                "Calculating severity score...",
+            ],
+            LEGAL: [
+                "Checking SLAs and compliance requirements...",
+                "Reviewing data privacy implications...",
+                "Drafting regulatory notification checklist...",
+            ],
+            PR: [
+                "Monitoring social sentiment...",
+                "Drafting holding statement...",
+                "Identifying key stakeholder groups...",
+            ],
+            EXEC: [
+                "Synthesizing agent reports...",
+                "Formulating strategic options...",
+                "Drafting executive summary...",
+            ],
+            CROSSCHECK: [
+                "Validating Forensics vs Impact data...",
+                "Checking for logical inconsistencies...",
+                " verifying confidence scores...",
+            ],
+            AGGREGATOR: [
+                "Compiling final crisis report...",
+                "Generating PDF brief...",
+                "Finalizing risk heatmap...",
+            ],
+        };
+
+        const allLogs = logs[name] || [];
+        if (phase === "start") return [allLogs[0]];
+        return allLogs;
+    };
+
     const updateAgent = useCallback(
-        (name: string, status: AgentState["status"]) => {
+        (name: string, status: AgentState["status"], logs?: string[]) => {
             setAgents((prev) =>
-                prev.map((a) => (a.name === name ? { ...a, status } : a))
+                prev.map((a) => (a.name === name ? { ...a, status, ...(logs ? { logs } : {}) } : a))
             );
         },
         []
@@ -94,33 +148,34 @@ export default function Home() {
 
             // ─── Simulated agent timeline (UX timing) ───
             setAllAgents("queued");
-            updateAgent("ROUTER", "running");
+            setAllAgents("queued");
+            updateAgent("ROUTER", "running", getAgentLogs("ROUTER", "start"));
 
             const t1 = setTimeout(() => {
-                updateAgent("ROUTER", "done");
-                updateAgent("FORENSICS", "running");
-                updateAgent("IMPACT", "running");
-                updateAgent("LEGAL", "running");
-                updateAgent("PR", "running");
-                updateAgent("EXEC", "running");
+                updateAgent("ROUTER", "done", getAgentLogs("ROUTER", "end"));
+                updateAgent("FORENSICS", "running", getAgentLogs("FORENSICS", "start"));
+                updateAgent("IMPACT", "running", getAgentLogs("IMPACT", "start"));
+                updateAgent("LEGAL", "running", getAgentLogs("LEGAL", "start"));
+                updateAgent("PR", "running", getAgentLogs("PR", "start"));
+                updateAgent("EXEC", "running", getAgentLogs("EXEC", "start"));
             }, 300);
 
             const t2 = setTimeout(() => {
-                updateAgent("FORENSICS", "done");
-                updateAgent("IMPACT", "done");
-                updateAgent("LEGAL", "done");
-                updateAgent("PR", "done");
-                updateAgent("EXEC", "done");
-                updateAgent("CROSSCHECK", "running");
+                updateAgent("FORENSICS", "done", getAgentLogs("FORENSICS", "end"));
+                updateAgent("IMPACT", "done", getAgentLogs("IMPACT", "end"));
+                updateAgent("LEGAL", "done", getAgentLogs("LEGAL", "end"));
+                updateAgent("PR", "done", getAgentLogs("PR", "end"));
+                updateAgent("EXEC", "done", getAgentLogs("EXEC", "end"));
+                updateAgent("CROSSCHECK", "running", getAgentLogs("CROSSCHECK", "start"));
             }, 1200);
 
             const t3 = setTimeout(() => {
-                updateAgent("CROSSCHECK", "done");
-                updateAgent("AGGREGATOR", "running");
+                updateAgent("CROSSCHECK", "done", getAgentLogs("CROSSCHECK", "end"));
+                updateAgent("AGGREGATOR", "running", getAgentLogs("AGGREGATOR", "start"));
             }, 1800);
 
             const t4 = setTimeout(() => {
-                updateAgent("AGGREGATOR", "done");
+                updateAgent("AGGREGATOR", "done", getAgentLogs("AGGREGATOR", "end"));
             }, 2200);
 
             try {
