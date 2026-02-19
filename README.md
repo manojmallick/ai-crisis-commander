@@ -52,6 +52,7 @@ AI Crisis Commander is a **multi-agent incident war room** where 8 specialized A
 - 📊 **Deterministic scoring** — risk scores and confidence computed algorithmically, not hallucinated
 - 🛡️ **Decision robustness** — "If We're Wrong" analysis proves recommendations hold regardless of root cause
 - ⏱️ **NIST SP 800-61 lifecycle** — maps crisis to standardized incident response phases
+- 👁️ **Transparent execution** — watch agents think in real-time with expandable action logs
 - 📣 **PagerDuty-grade escalation** — SEV-0 through SEV-3 with auto-classification
 - 💬 **One-click Slack message** — formatted #incident-war-room post ready to paste
 - 📄 **Board brief export** — print-optimized PDF for C-suite
@@ -353,6 +354,7 @@ YOU_API_KEY=your_you_com_api_key_here
 
 ### 2. Agent Activation *(20s)*
 - Watch 8 agents light up in real-time in the **Agent War Room** sidebar
+- **Click "+" on any agent** to see their step-by-step reasoning logs as they work
 - Pipeline: Router → 5 parallel agents → Cross-Validator → Aggregator
 - Each agent shows live status: Running → Complete ✅
 
