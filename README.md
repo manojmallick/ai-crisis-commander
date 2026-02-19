@@ -357,12 +357,29 @@ Users can describe the crisis naturally via voice or select pre-built scenarios.
 ![Agent War Room](./screens/2-agent-war-room.png)
 
 ### 3. Comprehensive Crisis Report
-The aggregated report provides a 360-degree view, covering Action Plan, Forensics, Impact, Legal Risks, and PR Strategy.
-![Crisis Report](./screens/3-comprehensive-report.png)
+The aggregated report provides a 360-degree view. Click the tabs to explore:
 
-### 4. Executive Brief
-A dedicated C-suite view distills the crisis into decision windows (30m / 2h / 72h) and board-ready bullet points for rapid alignment.
-![Executive Brief](./screens/4-executive-brief.png)
+| **Summary** | **Action Plan** |
+| :---: | :---: |
+| ![Summary](./screens/5-report-summary.png) | ![Action Plan](./screens/6-report-action-plan.png) |
+
+| **Forensics** | **Impact Analysis** |
+| :---: | :---: |
+| ![Forensics](./screens/7-report-forensics.png) | ![Impact](./screens/8-report-impact.png) |
+
+| **Legal Options** | **PR Strategy** |
+| :---: | :---: |
+| ![Legal](./screens/9-report-legal.png) | ![Comms](./screens/10-report-comms.png) |
+
+### 4. Advanced Risk Analytics
+Real-time risk scoring, heatmap analysis, and cross-agent validation.
+![Risk Dashboard](./screens/12-risk-dashboard.png)
+
+### 5. Executive Brief & Export
+A dedicated C-suite view with decision windows (30m / 2h / 72h) and print-ready PDF export.
+| **Executive View** | **PDF Export** |
+| :---: | :---: |
+| ![Executive](./screens/11-report-executive.png) | ![PDF](./screens/13-executive-brief-pdf.png) |
 
 ---
 
