@@ -346,40 +346,23 @@ YOU_API_KEY=your_you_com_api_key_here
 
 ---
 
-## 🎬 Demo Walkthrough (90 seconds)
+## 📱 Application Overview
 
-### 1. Crisis Input *(10s)*
-- Open the app → Click **"Data Breach: 50k users"** demo scenario
-- Or toggle Demo OFF and use voice input to describe a custom crisis
+### 1. Crisis Input & Activation
+Users can describe the crisis naturally via voice or select pre-built scenarios. The system immediately analyzes the intent and prepares the agent war room.
+![Crisis Input](./screens/1-home-crisis-input.png)
 
-### 2. Agent Activation *(20s)*
-- Watch 8 agents light up in real-time in the **Agent War Room** sidebar
-- **Click "+" on any agent** to see their step-by-step reasoning logs as they work
-- Pipeline: Router → 5 parallel agents → Cross-Validator → Aggregator
-- Each agent shows live status: Running → Complete ✅
+### 2. Agent War Room & Real-Time Logistics
+8 specialized agents work in parallel. Use the **expandable logs (+)** to watch each agent's reasoning process in real-time as they classify, investigate, and strategize.
+![Agent War Room](./screens/2-agent-war-room.png)
 
-### 3. Escalation + Lifecycle *(10s)*
-- **SEV-0 — Board Attention Required** badge appears at the top
-- NIST lifecycle shows: Detect ✓ → **Contain** 🔴 → Notify → Recover → Review
+### 3. Comprehensive Crisis Report
+The aggregated report provides a 360-degree view, covering Action Plan, Forensics, Impact, Legal Risks, and PR Strategy.
+![Crisis Report](./screens/3-comprehensive-report.png)
 
-### 4. Crisis Report *(20s)*
-- Browse 7 tabs: **Summary → Action Plan → Forensics → Impact → Legal → Comms → Executive**
-- Toggle **"Executive Brief"** for C-suite ready view with decision windows (30m / 2h / 72h)
-
-### 5. Risk Analytics *(15s)*
-- **Risk gauge** animates to 100/100 — CRITICAL
-- **Heatmap** fills with 5×3 severity grid showing decay over time horizons
-
-### 6. Trust & Validation *(10s)*
-- Expand **"Show confidence factors"** to see positive/negative scoring
-- Review **"If We're Wrong"** section proving recommendation robustness
-- Check **Cross-Validation** for agent conflicts (e.g., "PR vs LEGAL — HIGH risk")
-
-### 7. Output *(5s)*
-- Click **"Generate Slack Update"** → Copy formatted message for #incident-war-room
-- Click **"Board Brief (Print/PDF)"** → Clean print layout for executives
-
-> **Close with:** *"This replaces the first chaotic hour of crisis alignment."*
+### 4. Executive Brief
+A dedicated C-suite view distills the crisis into decision windows (30m / 2h / 72h) and board-ready bullet points for rapid alignment.
+![Executive Brief](./screens/4-executive-brief.png)
 
 ---
 

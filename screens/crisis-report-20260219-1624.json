@@ -1,0 +1,576 @@
+{
+  "router": {
+    "crisis_type": "DATA_BREACH",
+    "severity": "CRITICAL",
+    "time_horizon": "NEXT_24_HOURS",
+    "key_facts": {
+      "what_happened": "Unauthorized access to customer database detected",
+      "systems_affected": [
+        "customer database"
+      ],
+      "regions_affected": [],
+      "estimated_users_impacted": "Approximately 50,000",
+      "data_types_involved": [
+        "emails",
+        "hashed passwords"
+      ],
+      "current_status": "Access might still be ongoing"
+    },
+    "assumptions": [
+      "The unauthorized access is a security breach involving sensitive user data",
+      "The breach is ongoing or not yet fully contained",
+      "No specific geographic region was mentioned, so regions affected are unknown"
+    ],
+    "missing_information": [
+      "Exact geographic regions affected",
+      "Details on how the breach occurred",
+      "Whether the breach has been contained",
+      "Current mitigation measures in place"
+    ],
+    "agent_plan": [
+      {
+        "agent": "FORENSICS",
+        "priority": 1,
+        "why": "To investigate the breach, determine scope, and identify attack vectors"
+      },
+      {
+        "agent": "IMPACT",
+        "priority": 2,
+        "why": "To assess the impact on users and systems and guide containment efforts"
+      },
+      {
+        "agent": "LEGAL",
+        "priority": 3,
+        "why": "To ensure compliance with data breach notification laws and regulatory requirements"
+      },
+      {
+        "agent": "PR",
+        "priority": 4,
+        "why": "To prepare communication for affected users and public messaging"
+      },
+      {
+        "agent": "EXEC",
+        "priority": 5,
+        "why": "To oversee crisis response and coordinate cross-team efforts"
+      }
+    ]
+  },
+  "forensics": {
+    "root_cause_hypotheses": [
+      {
+        "hypothesis": "Compromised credentials or stolen access keys allowed unauthorized access to the customer database",
+        "likelihood": "HIGH",
+        "supporting_signals": [
+          "Unauthorized access detected to customer database",
+          "Access might still be ongoing",
+          "Data types involved include emails and hashed passwords, indicating possible credential theft"
+        ],
+        "disconfirming_signals": [
+          "No direct evidence of credential compromise provided yet"
+        ]
+      },
+      {
+        "hypothesis": "Exploitation of a vulnerability in the database or its access controls",
+        "likelihood": "MEDIUM",
+        "supporting_signals": [
+          "Unauthorized access to customer database",
+          "Potential ongoing access suggests possible exploit rather than one-time credential use"
+        ],
+        "disconfirming_signals": [
+          "No specific vulnerability or exploit evidence reported"
+        ]
+      },
+      {
+        "hypothesis": "Insider threat or misuse of privileged access",
+        "likelihood": "LOW",
+        "supporting_signals": [
+          "Access to sensitive customer data",
+          "No external intrusion indicators mentioned"
+        ],
+        "disconfirming_signals": [
+          "No insider activity or suspicious internal behavior reported"
+        ]
+      }
+    ],
+    "immediate_containment_steps": [
+      "Immediately revoke or rotate all database access credentials and API keys",
+      "Isolate the affected customer database server from the network to prevent further unauthorized access",
+      "Enable or tighten Web Application Firewall (WAF) rules to block suspicious traffic patterns",
+      "Take a snapshot of the current database state and logs for forensic analysis",
+      "Disable any active sessions or tokens that could be used for ongoing access",
+      "Increase monitoring and alerting on database access and unusual activity",
+      "Notify the incident response and legal teams to prepare for regulatory and customer communication"
+    ],
+    "timeline_hypothesis": [
+      {
+        "t": "T-unknown (before detection)",
+        "event": "Initial unauthorized access to customer database begins, possibly via compromised credentials or exploit"
+      },
+      {
+        "t": "T0 (detection time)",
+        "event": "Unauthorized access detected; approximately 50,000 user records including emails and hashed passwords potentially accessed"
+      },
+      {
+        "t": "T0 to T+60 minutes",
+        "event": "Containment actions initiated to revoke credentials, isolate systems, and snapshot evidence"
+      },
+      {
+        "t": "T+60 minutes to T+24 hours",
+        "event": "Ongoing investigation, monitoring, and preparation for customer notification and regulatory compliance"
+      }
+    ],
+    "high_value_questions": [
+      "What is the exact vector or method used for unauthorized access?",
+      "Are there any indicators of compromise or logs showing how access was gained?",
+      "Is the unauthorized access still ongoing or has it been stopped?",
+      "Have any access credentials or keys been compromised or leaked?",
+      "Are there any signs of data exfiltration beyond the initial access?",
+      "What is the scope of affected systems beyond the customer database?",
+      "Are backups or snapshots available and uncompromised for recovery?",
+      "What is the current status of monitoring and alerting on database access?"
+    ],
+    "assumptions": [
+      "No detailed forensic evidence or logs have been provided yet",
+      "The unauthorized access is external rather than insider threat based on initial information",
+      "The hashed passwords have not been cracked yet but could be at risk if leaked",
+      "No other systems besides the customer database are currently known to be affected"
+    ]
+  },
+  "impact": {
+    "impact_summary": "A critical data breach involving unauthorized access to the customer database has potentially exposed approximately 50,000 user records containing emails and hashed passwords. The ongoing access increases the risk of further data compromise and potential misuse of personal information.",
+    "estimated_blast_radius": {
+      "users_affected_range": "40,000-60,000",
+      "records_affected_range": "40,000-60,000",
+      "services_affected": [
+        "customer database"
+      ],
+      "downtime_estimate": "Potentially 1-4 hours depending on containment and remediation speed"
+    },
+    "financial_risk_band": "HIGH",
+    "operational_risks": [
+      "Continued unauthorized access leading to further data exfiltration",
+      "Increased load on incident response and IT security teams",
+      "Potential service interruptions during containment and remediation"
+    ],
+    "customer_risks": [
+      "Exposure of personally identifiable information (emails, hashed passwords)",
+      "Risk of identity theft and phishing attacks",
+      "Increased customer support demand and potential loss of customer trust"
+    ],
+    "assumptions": [
+      "Estimated users impacted is approximately 50,000 as reported",
+      "Data types involved are limited to emails and hashed passwords",
+      "Access might still be ongoing, increasing risk and impact",
+      "No current information on regions affected or additional systems compromised"
+    ],
+    "missing_information": [
+      "Exact duration and vector of unauthorized access",
+      "Whether any other sensitive data beyond emails and hashed passwords was accessed",
+      "Details on containment measures already in place",
+      "Potential regulatory or legal implications based on affected regions",
+      "Estimated financial impact or cost projections"
+    ]
+  },
+  "legal": {
+    "legal_risk_summary": "This critical data breach involving unauthorized access to customer emails and hashed passwords poses significant legal and compliance risks, including potential violations of data protection laws such as GDPR, CCPA, or other regional regulations depending on affected users' locations. Immediate containment and thorough investigation are essential to mitigate further exposure and regulatory penalties.",
+    "notification_considerations": [
+      {
+        "who": "Incident Response Team and Legal Counsel",
+        "when": "Immediately within the next 60 minutes",
+        "why": "To coordinate containment, evidence preservation, and legal risk assessment."
+      },
+      {
+        "who": "Data Protection Officer (DPO) or Privacy Officer",
+        "when": "Within the next 60 minutes",
+        "why": "To evaluate notification obligations under applicable data protection laws."
+      },
+      {
+        "who": "Regulatory Authorities",
+        "when": "Within 72 hours if required by law (e.g., GDPR)",
+        "why": "To comply with mandatory breach notification requirements."
+      },
+      {
+        "who": "Affected Customers",
+        "when": "As soon as legally required and after assessing risk",
+        "why": "To inform them of potential exposure and recommended protective actions."
+      }
+    ],
+    "liability_hotspots": [
+      "Failure to promptly contain and stop ongoing unauthorized access",
+      "Delayed or inadequate notification to regulators and affected individuals",
+      "Insufficient preservation of forensic evidence",
+      "Lack of clear internal communication and documentation of response actions"
+    ],
+    "do_now": [
+      "Immediately isolate and contain the affected customer database to prevent further unauthorized access",
+      "Engage incident response and legal counsel specialized in data breaches",
+      "Preserve all logs, access records, and forensic evidence securely",
+      "Maintain strict internal communication discipline to avoid unauthorized disclosures",
+      "Begin assessing the scope and impact of the breach including geographic regions affected"
+    ],
+    "avoid": [
+      "Do not delete or alter any logs or evidence related to the breach",
+      "Avoid making public statements or notifications without legal review",
+      "Do not underestimate the potential regulatory and reputational impact",
+      "Avoid internal speculation or sharing unverified information outside the response team"
+    ],
+    "assumptions": [
+      "Affected users may be located in multiple jurisdictions with varying notification laws",
+      "Incident counsel is available and will be engaged immediately",
+      "Current status of ongoing access is uncertain and requires urgent containment"
+    ],
+    "missing_information": [
+      "Exact geographic regions of affected users to determine jurisdictional notification requirements",
+      "Details on how the unauthorized access occurred (attack vector)",
+      "Whether any other sensitive data beyond emails and hashed passwords was accessed",
+      "Current containment measures in place and their effectiveness"
+    ],
+    "disclaimer": "This response provides general information and cautious considerations for crisis response and does not constitute legal advice. Organizations should consult qualified legal counsel for advice tailored to their specific circumstances."
+  },
+  "pr": {
+    "comms_objectives": [
+      "Inform stakeholders about the unauthorized access without causing undue panic",
+      "Reassure customers and the public that the situation is being actively investigated and mitigated",
+      "Provide clear guidance on safety measures and next steps for affected users",
+      "Maintain transparency while protecting the company’s reputation and legal position",
+      "Prepare stakeholders for ongoing updates as the investigation progresses"
+    ],
+    "stakeholder_plan": [
+      {
+        "audience": "CUSTOMERS",
+        "message_theme": "Notification of potential data exposure, reassurance of ongoing investigation, guidance on password security",
+        "channel": "Email and company website update",
+        "timing": "Within 2 hours"
+      },
+      {
+        "audience": "EMPLOYEES",
+        "message_theme": "Internal alert on breach status, instructions on communication protocols and security measures",
+        "channel": "Internal email and intranet",
+        "timing": "Within 1 hour"
+      },
+      {
+        "audience": "REGULATORS",
+        "message_theme": "Formal notification of data breach with preliminary facts and remediation steps",
+        "channel": "Official regulatory reporting channels",
+        "timing": "Within 24 hours"
+      },
+      {
+        "audience": "PRESS",
+        "message_theme": "Controlled public statement emphasizing investigation and user safety",
+        "channel": "Press release and monitored press conference",
+        "timing": "Within 4 hours"
+      },
+      {
+        "audience": "PARTNERS",
+        "message_theme": "Inform on breach impact and collaborative efforts to ensure system integrity",
+        "channel": "Email and direct calls if needed",
+        "timing": "Within 6 hours"
+      },
+      {
+        "audience": "INVESTORS",
+        "message_theme": "Summary of incident impact and company response strategy",
+        "channel": "Investor briefing via email and conference call",
+        "timing": "Within 24 hours"
+      },
+      {
+        "audience": "PUBLIC",
+        "message_theme": "General awareness of incident and assurance of ongoing efforts",
+        "channel": "Company website and social media",
+        "timing": "Within 4 hours"
+      }
+    ],
+    "holding_statement_draft": "We have detected unauthorized access to our customer database that may have impacted approximately 50,000 users, including exposure of emails and hashed passwords. We are actively investigating the situation and taking all necessary steps to secure our systems. We recommend customers remain vigilant, change their passwords, and monitor their accounts for any suspicious activity. We will provide updates as soon as more information becomes available.",
+    "q_and_a_preparation": [
+      "What happened and when was the breach detected?",
+      "What type of data was compromised?",
+      "How many users were affected?",
+      "Is the breach still ongoing?",
+      "What immediate actions are being taken to contain the breach?",
+      "What steps should customers take to protect themselves?",
+      "How is the company supporting affected users?",
+      "What are the regulatory reporting obligations and status?",
+      "What is being done to prevent a recurrence?",
+      "When will further updates be provided?"
+    ],
+    "tone_guidance": [
+      "Calm and reassuring to avoid panic",
+      "Transparent about known facts while avoiding speculation",
+      "Empathetic to affected users’ concerns",
+      "Proactive in highlighting response and mitigation efforts",
+      "Professional and measured to maintain trust"
+    ],
+    "assumptions": [
+      "No confirmed data misuse or exploits reported yet",
+      "Investigations and mitigation efforts are actively underway",
+      "No regional restrictions apply due to lack of specified affected regions",
+      "Regulatory notification requirements understood based on company jurisdiction",
+      "Hashed passwords are assumed to be salted but caution is still necessary"
+    ]
+  },
+  "exec": {
+    "executive_summary_bullets": [
+      "Unauthorized access detected in customer database affecting approximately 50,000 user records.",
+      "Data types involved include emails and hashed passwords, with potential ongoing access.",
+      "Immediate containment is critical to prevent further data exfiltration or damage.",
+      "Customer notification and legal escalation preparations must begin promptly.",
+      "Cross-functional coordination required for technical, legal, and communications response."
+    ],
+    "recommended_decisions": [
+      {
+        "decision": "Contain the breach and stop ongoing unauthorized access",
+        "options": [
+          "Immediately isolate affected database from network",
+          "Revoke all current access credentials to the database",
+          "Deploy enhanced monitoring and forensic tools to track attacker activity"
+        ],
+        "recommendation": "Immediately isolate the affected customer database and revoke all access credentials to stop ongoing unauthorized access.",
+        "why": "Stopping the breach quickly limits further data loss and allows forensic analysis to understand the attack vector."
+      },
+      {
+        "decision": "Initiate customer notification and legal escalation",
+        "options": [
+          "Prepare notification messaging for impacted users",
+          "Engage legal and compliance teams to assess regulatory obligations",
+          "Notify relevant data protection authorities as required"
+        ],
+        "recommendation": "Begin preparing customer notifications and engage legal teams immediately to comply with data breach regulations.",
+        "why": "Timely notification is critical for regulatory compliance and maintaining customer trust."
+      },
+      {
+        "decision": "Enhance customer support and communication posture",
+        "options": [
+          "Set up dedicated support channels for impacted customers",
+          "Provide guidance on password resets and monitoring for suspicious activity",
+          "Communicate transparently about the breach status and mitigation steps"
+        ],
+        "recommendation": "Establish dedicated support and clear communication to assist affected customers and reduce reputational damage.",
+        "why": "Proactive support helps mitigate customer impact and preserves company reputation."
+      }
+    ],
+    "top_risks": [
+      "Continued unauthorized access leading to further data exfiltration",
+      "Regulatory penalties due to delayed or inadequate breach notification",
+      "Loss of customer trust and reputational damage",
+      "Potential exploitation of compromised credentials in other systems",
+      "Insufficient forensic data to fully understand breach scope"
+    ],
+    "next_update_time_recommendation": "Provide an initial operational update within 60 minutes and a comprehensive status report within 24 hours.",
+    "assumptions": [
+      "Exact attack vector and entry point are currently unknown and under investigation.",
+      "No confirmed evidence yet of data exfiltration beyond the initial detection.",
+      "Legal and compliance teams are available to support notification and escalation.",
+      "Customer communication templates and support resources need to be developed.",
+      "Monitoring and forensic capabilities are in place or can be rapidly deployed."
+    ]
+  },
+  "report": {
+    "crisis_report_version": "1.0",
+    "crisis_type": "DATA_BREACH",
+    "severity": "CRITICAL",
+    "risk_score_0_100": 100,
+    "confidence_0_1": 0.6,
+    "one_paragraph_summary": "A critical data breach involving unauthorized access to the customer database has been detected, potentially exposing approximately 50,000 user records including emails and hashed passwords. The breach is possibly ongoing, increasing the risk of further data exfiltration and misuse. Immediate containment, forensic investigation, legal compliance, and customer communication efforts are underway to mitigate impact and regulatory risks.",
+    "action_plan": {
+      "next_60_minutes": [
+        "Isolate the affected customer database from the network to stop ongoing unauthorized access.",
+        "Revoke or rotate all database access credentials and API keys.",
+        "Notify incident response and legal teams to coordinate containment and regulatory assessment.",
+        "Begin internal communication to employees with breach status and communication protocols."
+      ],
+      "next_24_hours": [
+        "Conduct forensic investigation to determine breach vector and scope.",
+        "Prepare and send notifications to affected customers and regulatory authorities as required.",
+        "Deploy enhanced monitoring and alerting on database access and suspicious activity.",
+        "Issue controlled public statements and press releases to maintain transparency and trust.",
+        "Set up dedicated customer support channels for breach-related inquiries."
+      ],
+      "next_7_days": [
+        "Complete forensic analysis and confirm containment effectiveness.",
+        "Review and enhance security controls to prevent recurrence.",
+        "Continue regulatory reporting and legal compliance activities.",
+        "Monitor for any signs of data misuse or further unauthorized access.",
+        "Evaluate financial impact and update executive leadership regularly."
+      ]
+    },
+    "forensics": {
+      "root_cause_hypotheses": [
+        {
+          "hypothesis": "Compromised credentials or stolen access keys allowed unauthorized access to the customer database",
+          "likelihood": "HIGH"
+        },
+        {
+          "hypothesis": "Exploitation of a vulnerability in the database or its access controls",
+          "likelihood": "MEDIUM"
+        },
+        {
+          "hypothesis": "Insider threat or misuse of privileged access",
+          "likelihood": "LOW"
+        }
+      ],
+      "containment_steps": [
+        "Immediately revoke or rotate all database access credentials and API keys",
+        "Isolate the affected customer database server from the network to prevent further unauthorized access",
+        "Enable or tighten Web Application Firewall (WAF) rules to block suspicious traffic patterns",
+        "Take a snapshot of the current database state and logs for forensic analysis",
+        "Disable any active sessions or tokens that could be used for ongoing access",
+        "Increase monitoring and alerting on database access and unusual activity",
+        "Notify the incident response and legal teams to prepare for regulatory and customer communication"
+      ]
+    },
+    "impact": {
+      "impact_summary": "A critical data breach involving unauthorized access to the customer database has potentially exposed approximately 50,000 user records containing emails and hashed passwords. The ongoing access increases the risk of further data compromise and potential misuse of personal information.",
+      "users_affected_range": "40,000-60,000",
+      "financial_risk_band": "HIGH"
+    },
+    "legal_considerations": {
+      "summary": "This critical data breach involving unauthorized access to customer emails and hashed passwords poses significant legal and compliance risks, including potential violations of data protection laws such as GDPR, CCPA, or other regional regulations depending on affected users' locations. Immediate containment and thorough investigation are essential to mitigate further exposure and regulatory penalties.",
+      "notification_considerations": [
+        {
+          "who": "Incident Response Team and Legal Counsel",
+          "when": "Immediately within the next 60 minutes"
+        },
+        {
+          "who": "Data Protection Officer (DPO) or Privacy Officer",
+          "when": "Within the next 60 minutes"
+        },
+        {
+          "who": "Regulatory Authorities",
+          "when": "Within 72 hours if required by law (e.g., GDPR)"
+        },
+        {
+          "who": "Affected Customers",
+          "when": "As soon as legally required and after assessing risk"
+        }
+      ],
+      "disclaimer": "This response provides general information and cautious considerations for crisis response and does not constitute legal advice. Organizations should consult qualified legal counsel for advice tailored to their specific circumstances."
+    },
+    "comms": {
+      "holding_statement_draft": "We have detected unauthorized access to our customer database that may have impacted approximately 50,000 users, including exposure of emails and hashed passwords. We are actively investigating the situation and taking all necessary steps to secure our systems. We recommend customers remain vigilant, change their passwords, and monitor their accounts for any suspicious activity. We will provide updates as soon as more information becomes available.",
+      "stakeholder_plan": [
+        {
+          "audience": "CUSTOMERS",
+          "channel": "Email and company website update",
+          "timing": "Within 2 hours"
+        },
+        {
+          "audience": "EMPLOYEES",
+          "channel": "Internal email and intranet",
+          "timing": "Within 1 hour"
+        },
+        {
+          "audience": "REGULATORS",
+          "channel": "Official regulatory reporting channels",
+          "timing": "Within 24 hours"
+        },
+        {
+          "audience": "PRESS",
+          "channel": "Press release and monitored press conference",
+          "timing": "Within 4 hours"
+        },
+        {
+          "audience": "PARTNERS",
+          "channel": "Email and direct calls if needed",
+          "timing": "Within 6 hours"
+        },
+        {
+          "audience": "INVESTORS",
+          "channel": "Investor briefing via email and conference call",
+          "timing": "Within 24 hours"
+        },
+        {
+          "audience": "PUBLIC",
+          "channel": "Company website and social media",
+          "timing": "Within 4 hours"
+        }
+      ]
+    },
+    "executive_brief": {
+      "summary_bullets": [
+        "Unauthorized access detected in customer database affecting approximately 50,000 user records.",
+        "Data types involved include emails and hashed passwords, with potential ongoing access.",
+        "Immediate containment is critical to prevent further data exfiltration or damage.",
+        "Customer notification and legal escalation preparations must begin promptly.",
+        "Cross-functional coordination required for technical, legal, and communications response."
+      ],
+      "recommended_decisions": [
+        "Immediately isolate the affected customer database and revoke all access credentials to stop ongoing unauthorized access.",
+        "Begin preparing customer notifications and engage legal teams immediately to comply with data breach regulations.",
+        "Establish dedicated support and clear communication to assist affected customers and reduce reputational damage."
+      ]
+    },
+    "assumptions": [
+      "The unauthorized access is a security breach involving sensitive user data",
+      "The breach is ongoing or not yet fully contained",
+      "No specific geographic region was mentioned, so regions affected are unknown",
+      "No detailed forensic evidence or logs have been provided yet",
+      "The unauthorized access is external rather than insider threat based on initial information",
+      "The hashed passwords have not been cracked yet but could be at risk if leaked",
+      "No other systems besides the customer database are currently known to be affected",
+      "Affected users may be located in multiple jurisdictions with varying notification laws",
+      "Incident counsel is available and will be engaged immediately",
+      "Current status of ongoing access is uncertain and requires urgent containment",
+      "Investigations and mitigation efforts are actively underway",
+      "No regional restrictions apply due to lack of specified affected regions",
+      "Regulatory notification requirements understood based on company jurisdiction",
+      "Hashed passwords are assumed to be salted but caution is still necessary",
+      "Exact attack vector and entry point are currently unknown and under investigation",
+      "No confirmed evidence yet of data exfiltration beyond the initial detection",
+      "Legal and compliance teams are available to support notification and escalation",
+      "Customer communication templates and support resources need to be developed",
+      "Monitoring and forensic capabilities are in place or can be rapidly deployed"
+    ],
+    "missing_information": [
+      "Exact geographic regions affected",
+      "Details on how the breach occurred",
+      "Whether the breach has been contained",
+      "Current mitigation measures in place",
+      "Exact duration and vector of unauthorized access",
+      "Whether any other sensitive data beyond emails and hashed passwords was accessed",
+      "Details on containment measures already in place",
+      "Potential regulatory or legal implications based on affected regions",
+      "Estimated financial impact or cost projections",
+      "Current containment measures in place and their effectiveness"
+    ]
+  },
+  "crosscheck": {
+    "conflicts": [
+      {
+        "between": "PR vs LEGAL",
+        "issue": "PR recommends transparency and timely customer notification within 2 hours, while LEGAL advises avoiding public statements or notifications without legal review and stresses caution due to jurisdictional complexities.",
+        "risk": "HIGH",
+        "fix": "Align PR messaging timing and content with Legal's guidance to ensure notifications are legally vetted before release, possibly delaying customer notification until legal clearance."
+      },
+      {
+        "between": "FORENSICS vs IMPACT",
+        "issue": "FORENSICS assumes unauthorized access is external with low likelihood of insider threat, while IMPACT does not explicitly exclude insider threat and notes no external intrusion indicators mentioned by FORENSICS.",
+        "risk": "MEDIUM",
+        "fix": "Clarify and reconcile assumptions about insider threat possibility to avoid blind spots in investigation and containment."
+      }
+    ],
+    "overconfident_claims": [
+      "FORENSICS states HIGH likelihood that compromised credentials or stolen access keys allowed unauthorized access despite no direct evidence of credential compromise yet.",
+      "IMPACT estimates 40,000-60,000 users affected and ongoing access risk without confirmed duration or vector of access.",
+      "EXEC recommends immediate isolation and credential revocation as definitive containment steps without confirmed attack vector or ongoing access status."
+    ],
+    "missing_evidence_flags": [
+      "No agent explicitly requests or confirms review of network logs or endpoint detection telemetry to identify attack vector or lateral movement.",
+      "No mention of verifying integrity and security of backups beyond snapshot availability for recovery.",
+      "No agent queries or confirms whether multi-factor authentication (MFA) was enabled or bypassed for database access."
+    ],
+    "recommended_edits": [
+      {
+        "target": "holding_statement_draft",
+        "edit": "Add a cautionary phrase such as 'We are investigating the scope and cause of the incident and will provide updates as more information becomes available' to reduce perceived certainty."
+      },
+      {
+        "target": "holding_statement_draft",
+        "edit": "Include a note that 'At this time, there is no confirmed evidence of misuse of the exposed data' to avoid alarming customers prematurely."
+      },
+      {
+        "target": "EXEC recommended_decisions",
+        "edit": "Add a step to confirm ongoing access status and attack vector before finalizing containment actions to ensure targeted and effective response."
+      }
+    ],
+    "confidence_adjustment": -0.05
+  }
+}
