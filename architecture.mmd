@@ -22,8 +22,9 @@ graph TB
         AGGREGATOR["3. Report Aggregator<br/>Merge into Crisis Report"]
     end
 
-    subgraph Scoring["📊 Deterministic Scoring"]
-        RISK["Risk Score Engine<br/>0-100 (severity + impact + forensics)"]
+    subgraph Scoring["📊 Deterministic Scoring & Profiles"]
+        RISK["Risk Score Engine<br/>0-100 (Capped) + Raw Sum Tracker"]
+        PROFILE["Scoring Profiles<br/>Executive vs Forensics Expanded"]
         CONFIDENCE["Confidence Engine<br/>0-1 (base - missing_info penalty)"]
         HEATMAP["Heatmap Generator<br/>5×3 Grid (category × time horizon)"]
     end
@@ -80,6 +81,7 @@ graph TB
 
     %% Scoring
     AGGREGATOR --> RISK
+    AGGREGATOR --> PROFILE
     AGGREGATOR --> CONFIDENCE
     CROSSCHECK -.->|"confidence_adjustment"| CONFIDENCE
     RISK --> HEATMAP

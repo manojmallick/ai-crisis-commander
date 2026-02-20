@@ -217,28 +217,23 @@ const res = await fetch("https://api.you.com/v1/agents/runs", { ... });
 
 ### Risk Score (0–100) — Deterministic Algorithm
 
-The risk score is **computed, not hallucinated**. No LLM decides the number:
+The risk score is **computed, not hallucinated**. No LLM decides the number. The engine uses **Scoring Profiles** to customize factors based on the audience:
+- **Executive (Core Factors)**: Base Severity, Users Affected, Financial Exposure, Active Threat, Regulatory Trigger.
+- **Forensics (Expanded Factors)**: Includes deep-dive penalties (Uncertainty, Intelligence Gap).
 
-```typescript
-// lib/riskScore.ts
-let score = 20; // base
-if (severity === "CRITICAL")    score += 45;
-if (crisis_type === "DATA_BREACH") score += 10;
-if (financial_risk === "HIGH")  score += 5;
-if (highLikelihoodRootCause)    score += 10;
-// ... clamped to 0–100
-```
+The system transparently tracks the **Raw Sum** before clamping it to the 100-point ceiling for full calculation visibility.
 
 | Factor | Contribution |
 |---|---|
-| Base score | 20 |
-| Severity (LOW→CRITICAL) | 0 / 15 / 30 / 45 |
-| User count (50k / million) | 10 / 20 |
-| High-likelihood root cause exists | 10 |
-| Crisis type (breach/outage/PR) | 10 / 8 / 6 |
-| Financial risk band = HIGH | 5 |
+| Base Severity (CRITICAL/HIGH/MEDIUM/LOW) | 60 / 40 / 20 / 10 |
+| Users Affected (>50k / 10k-50k / 1k-10k) | 25 / 15 / 8 |
+| Financial Exposure (HIGH / MEDIUM)       | 15 / 5 |
+| Active Threat (Ongoing Isolation)        | 10 |
+| Regulatory Trigger (GDPR / Mandates)     | 5 |
+| *Uncertainty Penalty (Forensics Only)*   | *+5* |
+| *Intelligence Gap (Forensics Only)*      | *+5* |
 
-📁 [`lib/riskScore.ts`](./lib/riskScore.ts)
+📁 [`lib/riskBreakdown.ts`](./lib/riskBreakdown.ts)
 
 ### Confidence Score (0–1) — Missing Information Penalty
 
@@ -372,8 +367,10 @@ The aggregated report provides a 360-degree view. Click the tabs to explore:
 | ![Legal](./screens/9-report-legal.png) | ![Comms](./screens/10-report-comms.png) |
 
 ### 4. Advanced Risk Analytics
-Real-time risk scoring, heatmap analysis, and cross-agent validation.
-![Risk Dashboard](./screens/12-risk-dashboard.png)
+Real-time risk scoring, heatmap analysis, and transparent tracking of scoring profiles and raw mathematical factors.
+| **Risk Dashboard & Profiles** | **Risk Breakdown Modal** |
+| :---: | :---: |
+| ![Risk Dashboard](./screens/14-risk-dashboard-profiles.png) | ![Risk Modal](./screens/15-risk-breakdown-modal.png) |
 
 ### 5. Executive Brief & Export
 A dedicated C-suite view with decision windows (30m / 2h / 72h) and print-ready PDF export.

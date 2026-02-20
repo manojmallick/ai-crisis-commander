@@ -3,13 +3,21 @@
 import { useState } from "react";
 import type { CrisisReport } from "@/lib/schemas";
 import { downloadJson, crisisReportFilename, confidencePercent } from "@/lib/utils";
+import type { CrossCheckResult } from "@/lib/prompts/crosscheck";
+import { buildEvidenceMeta } from "@/lib/evidence";
+import EvidenceTracePanel from "./EvidenceTracePanel";
+import EvidenceBadge from "./EvidenceBadge";
+
+import { type RiskBreakdownResult, formatScoringProfile } from "@/lib/riskBreakdown";
 
 interface CrisisReportViewProps {
     report: CrisisReport;
     fullData: Record<string, unknown>;
+    riskScore: number;
+    breakdown: RiskBreakdownResult;
 }
 
-type ViewMode = "FULL" | "EXEC";
+type ViewMode = "FULL" | "EXEC" | "EVIDENCE";
 
 type Tab =
     | "summary"
@@ -98,7 +106,23 @@ function TimelineSection({
 
 /* ──────────────────────────── EXECUTIVE BRIEF VIEW ──────────────────────────── */
 
-function ExecBriefView({ report, onBack }: { report: CrisisReport; onBack: () => void }) {
+type ActionLogItem = {
+    at_iso: string;
+    action: "APPROVE_CONTAINMENT" | "ESCALATE_BOARD" | "INITIATE_REGULATORY";
+    note: string;
+};
+
+function ExecBriefView({ report, onBack, riskScore, breakdown }: { report: CrisisReport; onBack: () => void; riskScore: number; breakdown: RiskBreakdownResult }) {
+    const [actionLog, setActionLog] = useState<ActionLogItem[]>([]);
+
+    const profileBadgeText = formatScoringProfile(breakdown.profile);
+
+    const logAction = (action: ActionLogItem["action"], note: string) => {
+        setActionLog(prev => [...prev, { at_iso: new Date().toISOString(), action, note }]);
+    };
+
+    const hasEscalated = actionLog.some(a => a.action === "ESCALATE_BOARD");
+
     return (
         <div className="fade-in space-y-6">
             {/* Header */}
@@ -120,12 +144,18 @@ function ExecBriefView({ report, onBack }: { report: CrisisReport; onBack: () =>
             <div className="grid grid-cols-2 gap-3">
                 <div className="p-4 rounded-xl bg-black/20 border border-war-border text-center">
                     <p className="text-xs text-war-text-dim uppercase mb-1">Risk Score</p>
-                    <p className={`text-2xl font-bold ${report.risk_score_0_100 >= 80 ? "text-red-400"
-                        : report.risk_score_0_100 >= 60 ? "text-amber-400"
-                            : report.risk_score_0_100 >= 30 ? "text-yellow-400"
+                    <p className={`text-2xl font-bold ${riskScore >= 80 ? "text-red-400"
+                        : riskScore >= 60 ? "text-amber-400"
+                            : riskScore >= 30 ? "text-yellow-400"
                                 : "text-green-400"
                         }`}>
-                        {report.risk_score_0_100}/100
+                        {riskScore}/100
+                    </p>
+                    <p className="text-[10px] text-war-text-dim/60 mt-1.5">
+                        Raw Sum: {breakdown.rawSum} {breakdown.rawSum > 100 && <span className="text-[9px] opacity-70 ml-0.5">(capped at 100)</span>}
+                    </p>
+                    <p className="text-xs text-war-text-dim/70 mt-1">
+                        {profileBadgeText}
                     </p>
                 </div>
                 <div className="p-4 rounded-xl bg-black/20 border border-war-border text-center">
@@ -162,7 +192,7 @@ function ExecBriefView({ report, onBack }: { report: CrisisReport; onBack: () =>
                     🎯 Recommended Decisions
                 </h4>
                 {report.executive_brief.recommended_decisions.length > 0 ? (
-                    <ul className="space-y-1.5">
+                    <ul className="space-y-1.5 mb-4">
                         {report.executive_brief.recommended_decisions.map((d, i) => (
                             <li
                                 key={i}
@@ -173,7 +203,49 @@ function ExecBriefView({ report, onBack }: { report: CrisisReport; onBack: () =>
                         ))}
                     </ul>
                 ) : (
-                    <p className="text-xs text-war-muted italic">No decisions captured</p>
+                    <p className="text-xs text-war-muted italic mb-4">No decisions captured</p>
+                )}
+
+                {/* BOARD DECISION BUTTONS */}
+                <div className="flex flex-wrap gap-2 mt-2">
+                    <button
+                        onClick={() => logAction("APPROVE_CONTAINMENT", "Technical containment plan approved.")}
+                        className="px-3 py-1.5 rounded-lg bg-green-500/10 border border-green-500/30 text-green-400 text-xs font-semibold hover:bg-green-500/20 transition-colors"
+                    >
+                        ✅ Approve Containment
+                    </button>
+                    <button
+                        onClick={() => logAction("ESCALATE_BOARD", "Incident escalated to full board.")}
+                        className="px-3 py-1.5 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-semibold hover:bg-amber-500/20 transition-colors"
+                    >
+                        {hasEscalated ? "🔸 Board Notified" : "🔺 Escalate to Board"}
+                    </button>
+                    <button
+                        onClick={() => logAction("INITIATE_REGULATORY", "Regulatory notification process started.")}
+                        className="px-3 py-1.5 rounded-lg bg-blue-500/10 border border-blue-500/30 text-blue-400 text-xs font-semibold hover:bg-blue-500/20 transition-colors"
+                    >
+                        🏛️ Initiate Regulatory Notif.
+                    </button>
+                </div>
+
+                {/* ACTION LOG PANEL */}
+                {actionLog.length > 0 && (
+                    <div className="mt-4 p-3 bg-black/30 border border-war-border rounded-xl">
+                        <h5 className="text-[10px] uppercase tracking-wider text-war-text-dim mb-2 font-bold">Action Log</h5>
+                        <ul className="space-y-1">
+                            {actionLog.slice(-3).map((log, i) => {
+                                const d = new Date(log.at_iso);
+                                const time = `${String(d.getUTCHours()).padStart(2, "0")}:${String(d.getUTCMinutes()).padStart(2, "0")} UTC`;
+                                return (
+                                    <li key={i} className="text-xs flex gap-2">
+                                        <span className="text-war-text-dim font-mono">{time}</span>
+                                        <span className="text-war-accent">Demo User</span>
+                                        <span className="text-war-text">{log.note}</span>
+                                    </li>
+                                );
+                            })}
+                        </ul>
+                    </div>
                 )}
             </div>
 
@@ -233,6 +305,8 @@ function ExecBriefView({ report, onBack }: { report: CrisisReport; onBack: () =>
 export default function CrisisReportView({
     report,
     fullData,
+    riskScore,
+    breakdown,
 }: CrisisReportViewProps) {
     const [activeTab, setActiveTab] = useState<Tab>("summary");
     const [viewMode, setViewMode] = useState<ViewMode>("FULL");
@@ -243,8 +317,26 @@ export default function CrisisReportView({
 
     if (viewMode === "EXEC") {
         return (
-            <div className="glass-panel fade-in overflow-hidden p-6">
-                <ExecBriefView report={report} onBack={() => setViewMode("FULL")} />
+            <div className="glass-panel fade-in overflow-hidden p-6 relative">
+                <ExecBriefView report={report} onBack={() => setViewMode("FULL")} riskScore={riskScore} breakdown={breakdown} />
+            </div>
+        );
+    }
+
+    if (viewMode === "EVIDENCE") {
+        const crosscheck = fullData.crosscheck as CrossCheckResult | null;
+        const startedAt = (fullData?.meta as any)?.started_at_iso || new Date().toISOString();
+        const completedAt = (fullData?.meta as any)?.completed_at_iso || new Date().toISOString();
+        const meta = buildEvidenceMeta(report, crosscheck, startedAt, completedAt);
+
+        return (
+            <div className="glass-panel fade-in overflow-hidden p-6 relative">
+                <div className="flex justify-end mb-4 absolute top-6 right-6 z-10">
+                    <button onClick={() => setViewMode("FULL")} className="btn-outline text-xs">
+                        ← Full Report
+                    </button>
+                </div>
+                <EvidenceTracePanel meta={meta} />
             </div>
         );
     }
@@ -268,9 +360,18 @@ export default function CrisisReportView({
                     >
                         👔 Executive Brief
                     </button>
+                    <button
+                        onClick={() => setViewMode("EVIDENCE")}
+                        className="btn-outline text-xs"
+                        id="evidence-mode-btn"
+                    >
+                        🔎 Evidence Mode
+                    </button>
                     <button onClick={exportJSON} className="btn-outline text-xs" id="export-json-btn">
                         ↓ Export JSON
                     </button>
+                    {/* Minimal Evidence Mode Badge */}
+                    <EvidenceBadge />
                 </div>
             </div>
 

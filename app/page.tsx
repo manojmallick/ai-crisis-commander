@@ -15,6 +15,9 @@ import CrisisLifecycle from "@/components/CrisisLifecycle";
 import EscalationBadge from "@/components/EscalationBadge";
 import type { CrisisReport } from "@/lib/schemas";
 import type { CrossCheckResult } from "@/lib/prompts/crosscheck";
+import { simulateDelay } from "@/lib/simulation";
+import IncidentClock from "@/components/IncidentClock";
+import { computeRiskBreakdown } from "@/lib/riskBreakdown";
 
 /* ────────────────── INITIAL STATE ────────────────── */
 
@@ -42,9 +45,14 @@ export default function Home() {
     const [crosscheck, setCrosscheck] = useState<CrossCheckResult | null>(null);
     const [fullData, setFullData] = useState<Record<string, unknown> | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const [simulation, setSimulation] = useState({ active: false, minutes: 0 });
+    const [runStartedAt, setRunStartedAt] = useState<string | null>(null);
     const lastTranscript = useRef<string>("");
 
     /* ── helpers ── */
+    const displayReport = simulation.active && report ? simulateDelay(report, simulation.minutes) : report;
+    const breakdown = displayReport ? computeRiskBreakdown(displayReport) : null;
+    const riskScore = breakdown ? breakdown.finalScore : 0;
 
     /* ── helpers ── */
 
@@ -121,6 +129,8 @@ export default function Home() {
         setCrosscheck(null);
         setFullData(null);
         setError(null);
+        setSimulation({ active: false, minutes: 0 });
+        setRunStartedAt(null);
     }, []);
 
     /* ── persist report for Board Brief ── */
@@ -145,6 +155,8 @@ export default function Home() {
             setCrosscheck(null);
             setFullData(null);
             setError(null);
+            setSimulation({ active: false, minutes: 0 });
+            setRunStartedAt(new Date().toISOString());
 
             // ─── Simulated agent timeline (UX timing) ───
             setAllAgents("queued");
@@ -272,6 +284,8 @@ export default function Home() {
                     </div>
 
                     <div className="flex items-center gap-3">
+                        <IncidentClock report={displayReport} startedAtISO={runStartedAt} />
+
                         {/* Demo Mode Toggle */}
                         <label className="flex items-center gap-2 cursor-pointer select-none" htmlFor="demo-toggle">
                             <span className="text-xs text-war-text-dim font-semibold uppercase tracking-wider">
@@ -376,11 +390,22 @@ export default function Home() {
             {/* ────── Processing / Results ────── */}
             {(phase === "processing" || phase === "done") && (
                 <div className="space-y-6">
+                    {/* ── Simulation Banner ── */}
+                    {simulation.active && (
+                        <div className="bg-amber-500/10 border border-amber-500/30 text-amber-300 p-4 rounded-xl flex items-center gap-4 fade-in">
+                            <span className="text-2xl">⚠️</span>
+                            <div>
+                                <p className="text-sm font-bold">SIMULATION ACTIVE: +{simulation.minutes} minutes delay applied.</p>
+                                <p className="text-xs opacity-80 mt-1">Risk scores, confidence, and heatmaps deterministically adjusted to reflect unmitigated threat spread.</p>
+                            </div>
+                        </div>
+                    )}
+
                     {/* ── Full-width: Escalation + Lifecycle Banner ── */}
-                    {report && (
+                    {displayReport && (
                         <div className="grid grid-cols-1 md:grid-cols-[auto_1fr] gap-4 items-center fade-in">
-                            <EscalationBadge report={report} />
-                            <CrisisLifecycle report={report} />
+                            <EscalationBadge report={displayReport} />
+                            <CrisisLifecycle report={displayReport} />
                         </div>
                     )}
 
@@ -389,19 +414,36 @@ export default function Home() {
                         {/* Compact Sidebar */}
                         <div className="space-y-4">
                             <AgentStatusPanel agents={agents} />
-                            {report && (
-                                <RiskGauge
-                                    score={report.risk_score_0_100}
-                                    confidence={report.confidence_0_1}
-                                />
+                            {displayReport && breakdown && (
+                                <>
+                                    <RiskGauge report={displayReport} breakdown={breakdown} riskScore={riskScore} />
+                                    <div className="glass-panel p-4 flex flex-col gap-2">
+                                        {!simulation.active ? (
+                                            <button
+                                                className="btn-outline w-full text-[10px] md:text-xs text-amber-400 border-amber-500/30 hover:bg-amber-500/10"
+                                                onClick={() => setSimulation({ active: true, minutes: 30 })}
+                                                title="Applies deterministic escalation rules."
+                                            >
+                                                ⏱️ Simulate +30m Delay
+                                            </button>
+                                        ) : (
+                                            <button
+                                                className="btn-outline w-full text-xs text-war-text"
+                                                onClick={() => setSimulation({ active: false, minutes: 0 })}
+                                            >
+                                                ↩ Reset Simulation
+                                            </button>
+                                        )}
+                                    </div>
+                                </>
                             )}
                         </div>
 
                         {/* Main Report Area */}
                         <div>
-                            {report && fullData ? (
+                            {displayReport && fullData && breakdown ? (
                                 <div className="space-y-4">
-                                    <CrisisReportView report={report} fullData={fullData} />
+                                    <CrisisReportView report={displayReport} fullData={{ ...fullData, meta: { started_at_iso: runStartedAt } }} riskScore={riskScore} breakdown={breakdown} />
 
                                     {/* Board Brief Link */}
                                     <div className="flex justify-end">
@@ -431,12 +473,12 @@ export default function Home() {
                     </div>
 
                     {/* ── Full-width Bottom Dashboard ── */}
-                    {report && (
+                    {displayReport && (
                         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 fade-in">
-                            <ConfidencePanel report={report} />
-                            <RiskHeatmap report={report} />
-                            <SlackMessage report={report} />
-                            <CrosscheckPanel crosscheck={crosscheck} />
+                            <ConfidencePanel report={displayReport} riskScore={riskScore} />
+                            <RiskHeatmap report={displayReport} />
+                            <SlackMessage report={displayReport} riskScore={riskScore} />
+                            <CrosscheckPanel crosscheck={crosscheck} report={displayReport} />
                         </div>
                     )}
                 </div>

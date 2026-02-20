@@ -5,6 +5,7 @@ import type { CrisisReport } from "@/lib/schemas";
 
 interface ConfidencePanelProps {
     report: CrisisReport;
+    riskScore: number;
 }
 
 /* ────────── Confidence Factor Calculator ────────── */
@@ -78,7 +79,7 @@ function computeRobustness(report: CrisisReport): string[] {
     return items.slice(0, 4);
 }
 
-export default function ConfidencePanel({ report }: ConfidencePanelProps) {
+export default function ConfidencePanel({ report, riskScore }: ConfidencePanelProps) {
     const confidencePct = Math.round(report.confidence_0_1 * 100);
     const [breakdownOpen, setBreakdownOpen] = useState(false);
     const factors = computeConfidenceFactors(report);
@@ -149,16 +150,16 @@ export default function ConfidencePanel({ report }: ConfidencePanelProps) {
                     Risk Score
                 </span>
                 <span
-                    className={`text-lg font-bold ${report.risk_score_0_100 >= 80
+                    className={`text-lg font-bold ${riskScore >= 80
                         ? "text-red-400"
-                        : report.risk_score_0_100 >= 60
+                        : riskScore >= 60
                             ? "text-amber-400"
-                            : report.risk_score_0_100 >= 30
+                            : riskScore >= 30
                                 ? "text-yellow-400"
                                 : "text-green-400"
                         }`}
                 >
-                    {report.risk_score_0_100}/100
+                    {riskScore}/100
                 </span>
             </div>
 

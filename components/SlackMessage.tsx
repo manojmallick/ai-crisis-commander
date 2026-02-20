@@ -6,13 +6,14 @@ import { generateSlackMessage } from "@/lib/slackFormat";
 
 interface SlackMessageProps {
     report: CrisisReport;
+    riskScore: number;
 }
 
-export default function SlackMessage({ report }: SlackMessageProps) {
+export default function SlackMessage({ report, riskScore }: SlackMessageProps) {
     const [copied, setCopied] = useState(false);
     const [expanded, setExpanded] = useState(false);
 
-    const message = generateSlackMessage(report);
+    const message = generateSlackMessage(report, riskScore);
 
     const handleCopy = async () => {
         try {

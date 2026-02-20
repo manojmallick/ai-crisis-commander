@@ -30,18 +30,20 @@ function sevPrefix(sev: string): string {
 
 /* ────────── Main ────────── */
 
-export function generateSlackMessage(report: CrisisReport): string {
+export function generateSlackMessage(report: CrisisReport, customRiskScore?: number): string {
     const emoji = severityEmoji(report.severity);
     const sev = sevPrefix(report.severity);
     const crisisLabel = report.crisis_type.replace(/_/g, " ");
     const conf = Math.round(report.confidence_0_1 * 100);
     const ts = new Date().toISOString().slice(0, 16).replace("T", " ");
 
+    const displayScore = customRiskScore !== undefined ? customRiskScore : report.risk_score_0_100;
+
     const lines: string[] = [];
 
     // Header
     lines.push(
-        `${emoji} *[${sev}] Incident Update — ${crisisLabel}* (Risk ${report.risk_score_0_100}/100, Conf ${conf}%)`
+        `${emoji} *[${sev}] Incident Update — ${crisisLabel}* (Risk ${displayScore}/100, Conf ${conf}%)`
     );
     lines.push("");
 
