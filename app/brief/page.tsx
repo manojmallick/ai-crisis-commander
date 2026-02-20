@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import type { CrisisReport } from "@/lib/schemas";
+import { computeRiskBreakdown, formatScoringProfile } from "@/lib/riskBreakdown";
 
 export default function BoardBriefPage() {
     const [report, setReport] = useState<CrisisReport | null>(null);
@@ -34,6 +35,11 @@ export default function BoardBriefPage() {
         dateStyle: "full",
         timeStyle: "short",
     });
+
+    const breakdown = computeRiskBreakdown(report);
+    const riskScore = breakdown.finalScore;
+    const rawSum = breakdown.rawSum;
+    const profileBadgeText = formatScoringProfile(breakdown.profile);
 
     return (
         <div className="board-brief">
@@ -99,8 +105,14 @@ export default function BoardBriefPage() {
             <div className="brief-metrics">
                 <div className="metric-box">
                     <div className="metric-label">Risk Score</div>
-                    <div className="metric-value" style={{ color: report.risk_score_0_100 >= 70 ? "#dc2626" : "#f59e0b" }}>
-                        {report.risk_score_0_100}/100
+                    <div className="metric-value" style={{ color: riskScore >= 70 ? "#dc2626" : "#f59e0b" }}>
+                        {riskScore}/100
+                    </div>
+                    <div style={{ fontSize: "10px", color: "#6b7280", marginTop: "4px" }}>
+                        Raw Sum: {rawSum} {rawSum > 100 && <span style={{ opacity: 0.7 }}>(capped at 100)</span>}
+                    </div>
+                    <div style={{ fontSize: "10px", color: "#6b7280", marginTop: "2px" }}>
+                        {profileBadgeText}
                     </div>
                 </div>
                 <div className="metric-box">
@@ -131,7 +143,7 @@ export default function BoardBriefPage() {
             <div className="brief-section">
                 <h2>Executive Summary</h2>
                 <ol>
-                    {report.executive_brief.summary_bullets.map((b, i) => (
+                    {report.executive_brief.summary_bullets.map((b: string, i: number) => (
                         <li key={i}>{b}</li>
                     ))}
                 </ol>
@@ -144,7 +156,7 @@ export default function BoardBriefPage() {
                     <div>
                         <h3>🔴 Next 60 Minutes</h3>
                         <ul>
-                            {report.action_plan.next_60_minutes.map((a, i) => (
+                            {report.action_plan.next_60_minutes.map((a: string, i: number) => (
                                 <li key={i}>{a}</li>
                             ))}
                         </ul>
@@ -152,7 +164,7 @@ export default function BoardBriefPage() {
                     <div>
                         <h3>🟡 Next 24 Hours</h3>
                         <ul>
-                            {report.action_plan.next_24_hours.map((a, i) => (
+                            {report.action_plan.next_24_hours.map((a: string, i: number) => (
                                 <li key={i}>{a}</li>
                             ))}
                         </ul>
@@ -160,7 +172,7 @@ export default function BoardBriefPage() {
                     <div>
                         <h3>🟢 Next 7 Days</h3>
                         <ul>
-                            {report.action_plan.next_7_days.map((a, i) => (
+                            {report.action_plan.next_7_days.map((a: string, i: number) => (
                                 <li key={i}>{a}</li>
                             ))}
                         </ul>
@@ -187,7 +199,7 @@ export default function BoardBriefPage() {
                             </tr>
                         </thead>
                         <tbody>
-                            {report.legal_considerations.notification_considerations.map((n, i) => (
+                            {report.legal_considerations.notification_considerations.map((n: { who: string, when: string }, i: number) => (
                                 <tr key={i}>
                                     <td>{n.who}</td>
                                     <td>{n.when}</td>
@@ -203,7 +215,7 @@ export default function BoardBriefPage() {
             <div className="brief-section">
                 <h2>Recommended Decisions</h2>
                 <ul>
-                    {report.executive_brief.recommended_decisions.map((d, i) => (
+                    {report.executive_brief.recommended_decisions.map((d: string, i: number) => (
                         <li key={i}>{d}</li>
                     ))}
                 </ul>
@@ -217,7 +229,7 @@ export default function BoardBriefPage() {
                         <div>
                             <h3>Assumptions</h3>
                             <ul>
-                                {report.assumptions.map((a, i) => (
+                                {report.assumptions.map((a: string, i: number) => (
                                     <li key={i}>{a}</li>
                                 ))}
                             </ul>
@@ -226,7 +238,7 @@ export default function BoardBriefPage() {
                             <div>
                                 <h3>Missing Information</h3>
                                 <ul>
-                                    {report.missing_information.map((m, i) => (
+                                    {report.missing_information.map((m: string, i: number) => (
                                         <li key={i}>{m}</li>
                                     ))}
                                 </ul>
